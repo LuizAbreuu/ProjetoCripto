@@ -15,9 +15,9 @@ Uma aplicação moderna, rápida e responsiva para visualizar informações em t
 ## 🎯 Sobre o Projeto
 
 **ProjetoCripto** é uma aplicação web que consome a API pública CoinCap para exibir:
-- Lista paginada de criptom oedas com principais informações
-- Detalhes completos de cada criptom oeda
-- Busca e filtro de criptom oedas
+- Lista paginada de cripto moedas com principais informações
+- Detalhes completos de cada cripto moeda
+- Busca e filtro de cripto moedas
 - Interface responsiva e intuitiva
 
 A aplicação foi desenvolvida utilizando as mais modernas práticas de desenvolvimento frontend, enfatizando performance, manutenibilidade e experiência do usuário.
@@ -38,14 +38,14 @@ A aplicação foi desenvolvida utilizando as mais modernas práticas de desenvol
 ## ✨ Funcionalidades
 
 ### 🏠 Página Home
-- Listagem de criptom oedas com limite de 10 por página
+- Listagem de cripto moedas com limite de 10 por página
 - Exibição de informações: nome, símbolo, preço em USD, variação 24h, rank, supply e market cap
-- **Paginação**: Navegação entre páginas de criptom oedas
-- **Busca**: Campo de busca para filtrar criptom oedas por nome ou símbolo
-- **Navegação**: Clique em qualquer criptom oeda para ver detalhes completos
+- **Paginação**: Navegação entre páginas de cripto moedas
+- **Busca**: Campo de busca para filtrar cripto moedas por nome ou símbolo
+- **Navegação**: Clique em qualquer cripto moeda para ver detalhes completos
 
 ### 📊 Página de Detalhes
-- Informações completas da criptom oeda selecionada
+- Informações completas da cripto moeda selecionada
 - Formatação de valores monetários automática
 - Tratamento de erros com redirecionamento para home
 - Indicador de carregamento (loading state)
