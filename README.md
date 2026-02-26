@@ -1,6 +1,6 @@
 # 🪙 Projeto Cripto - Aplicação de Cripto moedas
 
-Uma aplicação moderna, rápida e responsiva para visualizar informações em tempo real sobre criptom oedas. O projeto implementa boas práticas de desenvolvimento frontend com React, TypeScript e arquitetura escalável.
+Uma aplicação moderna, rápida e responsiva para visualizar informações em tempo real sobre cripto moedas. O projeto implementa boas práticas de desenvolvimento frontend com React, TypeScript e arquitetura escalável.
 
 ## 📋 Índice
 
