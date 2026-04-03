@@ -157,3 +157,21 @@ table td{
   }
 
 }
+
+.priceUp {
+  animation: flashGreen 1s ease-out;
+}
+
+.priceDown {
+  animation: flashRed 1s ease-out;
+}
+
+@keyframes flashGreen {
+  0% { color: #12f98a; text-shadow: 0 0 8px #12f98a; }
+  100% { color: #FFF; text-shadow: none; }
+}
+
+@keyframes flashRed {
+  0% { color: #f91257; text-shadow: 0 0 8px #f91257; }
+  100% { color: #FFF; text-shadow: none; }
+}

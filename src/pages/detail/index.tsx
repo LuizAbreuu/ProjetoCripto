@@ -63,7 +63,37 @@ export function Detail() {
     }
 
     getCoin();
-  }, [cripto]) 
+  }, [cripto, navigate]) 
+
+  useEffect(() => {
+    const ws = new WebSocket(`wss://ws.coincap.io/prices?assets=${cripto}`);
+
+    ws.onmessage = (event) => {
+      const parsedData = JSON.parse(event.data);
+      if (parsedData[cripto as string]) {
+        const newPrice = Number(parsedData[cripto as string]);
+        const priceFormatter = Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD"
+        });
+        
+        setCoin((prevCoin) => {
+          if (!prevCoin) return prevCoin;
+          const oldPrice = Number(prevCoin.priceUsd);
+          return {
+            ...prevCoin,
+            priceUsd: parsedData[cripto as string],
+            formatedPrice: priceFormatter.format(newPrice),
+            priceDiff: oldPrice < newPrice ? 'up' : oldPrice > newPrice ? 'down' : prevCoin.priceDiff
+          }
+        })
+      }
+    };
+
+    return () => {
+      ws.close();
+    }
+  }, [cripto]);
 
 
   if(loading || !coin){
@@ -88,7 +118,12 @@ export function Detail() {
         />
         <h1>{coin?.name} | {coin?.symbol}</h1>
 
-        <p><strong>Preço: </strong>{coin?.formatedPrice}</p>
+        <p>
+          <strong>Preço: </strong>
+          <span key={coin?.priceUsd} className={coin?.priceDiff === 'up' ? styles.priceUp : coin?.priceDiff === 'down' ? styles.priceDown : undefined}>
+            {coin?.formatedPrice}
+          </span>
+        </p>
 
         <a>
           <strong>Mercado: </strong>{coin?.formatedMarket}

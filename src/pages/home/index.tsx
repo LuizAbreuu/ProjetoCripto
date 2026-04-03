@@ -20,6 +20,7 @@ export interface CoinProps{
   formatedPrice?: string;
   formatedMarket?: string;
   formatedVolume?: string;
+  priceDiff?: 'up' | 'down';
 }
 
 interface DataProp{
@@ -34,45 +35,79 @@ export function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    async function getData(){
+      fetch(`https://api.coincap.io/v2/assets?limit=10&offset=${offset}`)
+      .then(response => response.json())
+      .then((data: DataProp) => {
+        const coinsData = data.data;
+
+        const price = Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD"
+        })
+
+        const priceCompact = Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD",
+          notation: "compact"
+        })
+
+        const formatedResult = coinsData.map((item) => {
+          const formated = {
+            ...item,
+            formatedPrice: price.format(Number(item.priceUsd)),
+            formatedMarket: priceCompact.format(Number(item.marketCapUsd)),
+            formatedVolume: priceCompact.format(Number(item.volumeUsd24Hr))
+          }
+
+          return formated;
+        })
+
+        setCoins((prevCoins) => [...prevCoins, ...formatedResult]);
+      })
+    }
+
     getData();
   }, [offset])
 
-  async function getData(){
-    fetch(`https://api.coincap.io/v2/assets?limit=10&offset=${offset}`)
-    .then(response => response.json())
-    .then((data: DataProp) => {
-      const coinsData = data.data;
+  useEffect(() => {
+    if (coins.length === 0) return;
 
-      const price = Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD"
-      })
+    const assets = coins.map(c => c.id).join(',');
+    const ws = new WebSocket(`wss://ws.coincap.io/prices?assets=${assets}`);
 
-      const priceCompact = Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-        notation: "compact"
-      })
+    ws.onmessage = (event) => {
+      const parsedData = JSON.parse(event.data);
+      
+      setCoins(prevCoins => {
+        let hasChanges = false;
+        const updated = prevCoins.map(c => {
+          if (parsedData[c.id]) {
+            hasChanges = true;
+            const newPrice = Number(parsedData[c.id]);
+            const priceFormatter = Intl.NumberFormat("en-US", {
+              style: "currency",
+              currency: "USD"
+            });
+            const oldPrice = Number(c.priceUsd);
+            
+            return {
+               ...c,
+               priceUsd: parsedData[c.id],
+               formatedPrice: priceFormatter.format(newPrice),
+               priceDiff: oldPrice < newPrice ? 'up' : oldPrice > newPrice ? 'down' : c.priceDiff
+            }
+          }
+          return c;
+        });
+        return hasChanges ? updated : prevCoins;
+      });
+    };
 
-      const formatedResult = coinsData.map((item) => {
-        const formated = {
-          ...item,
-          formatedPrice: price.format(Number(item.priceUsd)),
-          formatedMarket: priceCompact.format(Number(item.marketCapUsd)),
-          formatedVolume: priceCompact.format(Number(item.volumeUsd24Hr))
-        }
-
-        return formated;
-      })
-
-      //console.log(formatedResult);
-
-      const listCoins = [...coins, ...formatedResult]
-      setCoins(listCoins);
-
-    })
-
-  }
+    return () => {
+      ws.close();
+    }
+  }, [coins.length]);
 
   function handleSubmit(e: FormEvent<HTMLFormElement>){
     e.preventDefault();
@@ -141,7 +176,9 @@ export function Home() {
               </td>
   
               <td className={styles.tdLabel} data-label="Preço">
-                {item.formatedPrice}
+                <span key={item.priceUsd} className={item.priceDiff === 'up' ? styles.priceUp : item.priceDiff === 'down' ? styles.priceDown : undefined}>
+                  {item.formatedPrice}
+                </span>
               </td>
   
               <td className={styles.tdLabel} data-label="Volume">

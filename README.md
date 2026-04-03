@@ -16,7 +16,8 @@ Uma aplicação moderna, rápida e responsiva para visualizar informações em t
 
 **ProjetoCripto** é uma aplicação web que consome a API pública CoinCap para exibir:
 - Lista paginada de cripto moedas com principais informações
-- Detalhes completos de cada cripto moeda
+- Atualizações de preços **em tempo real** via *WebSockets*
+- Detalhes completos de cada cripto moeda com foco em tempo real
 - Busca e filtro de cripto moedas
 - Interface responsiva e intuitiva
 
@@ -34,13 +35,20 @@ A aplicação foi desenvolvida utilizando as mais modernas práticas de desenvol
 | **CSS Modules** | Nativo | Escopo local para estilos CSS |
 | **ESLint** | 9.39.1 | Ferramenta de linting para código limpo |
 | **TypeScript ESLint** | 8.48.0 | Regras ESLint com suporte a TypeScript |
+| **WebSockets** | Nativo | Conexão API de túnel bidirecional |
 
 ## ✨ Funcionalidades
+
+### 📈 Atualizações em Tempo Real (WebSockets)
+- Conexão contínua com a API do CoinCap (wss://ws.coincap.io/prices)
+- **High-Frequency UI**: Animações de flash de cor (*Verde* para lucro repentino, *Vermelho* se cair) sempre que a cotação é atualizada em tempo real.
+- Redução extrema do custo de re-load (HTTP API chamados estritamente na paginação inicial).
 
 ### 🏠 Página Home
 - Listagem de cripto moedas com limite de 10 por página
 - Exibição de informações: nome, símbolo, preço em USD, variação 24h, rank, supply e market cap
-- **Paginação**: Navegação entre páginas de cripto moedas
+- **Tempo Real**: Célula de preço de todas as criptomoedas presentes na tela com reatividade bidirecional acionando flashes de variação no momento em que ocorrem na rede!
+- **Paginação**: Navegação entre páginas de cripto moedas mediante requisições isoladas.
 - **Busca**: Campo de busca para filtrar cripto moedas por nome ou símbolo
 - **Navegação**: Clique em qualquer cripto moeda para ver detalhes completos
 
@@ -456,20 +464,20 @@ async function getData() {
 }
 ```
 
-## 📊 Fluxo de Dados
+## 📊 Fluxo de Dados (HTTP e WebSocket)
 
 ```
-API (CoinCap)
-    ↓
-Home.tsx / Detail.tsx (componentes página)
-    ↓
-useState + useEffect (hooks)
-    ↓
-Formatação de dados
-    ↓
-Renderização JSX
-    ↓
-CSS Modules (estilos)
+API REST (CoinCap)  &  WebSocket (ws.coincap.io)
+        ↓                        ↓
+Home.tsx / Detail.tsx ------(escuta eventos)
+        ↓                        ↓
+useState + useEffect         Muta apenas campo Preço
+        ↓                        ↓
+Formatação de dados ←-------- Atualiza o UI
+        ↓                        ↓
+Renderização JSX             Flash Animations
+        ↓                        ↓
+CSS Modules                  (Verde/Vermelho)
 ```
 
 ## 🚀 Performance

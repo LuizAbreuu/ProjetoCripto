@@ -1,0 +1,39 @@
+
+C:\Users\luiz_\ProjetoCripto\src\pages\detail\index.tsx
+  66:6  warning  React Hook useEffect has a missing dependency: 'navigate'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\luiz_\ProjetoCripto\src\pages\home\index.tsx
+  37:5  error    Error: Cannot access variable before it is declared
+
+`getData` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+C:\Users\luiz_\ProjetoCripto\src\pages\home\index.tsx:37:5
+  35 |
+  36 |   useEffect(() => {
+> 37 |     getData();
+     |     ^^^^^^^ `getData` accessed before it is declared
+  38 |   }, [offset])
+  39 |
+  40 |   async function getData(){
+
+C:\Users\luiz_\ProjetoCripto\src\pages\home\index.tsx:40:3
+  38 |   }, [offset])
+  39 |
+> 40 |   async function getData(){
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 41 |     fetch(`https://api.coincap.io/v2/assets?limit=10&offset=${offset}`)
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 42 |     .then(response => response.json())
+     ÔÇª
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 74 |
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 75 |   }
+     | ^^^^ `getData` is declared here
+  76 |
+  77 |   function handleSubmit(e: FormEvent<HTMLFormElement>){
+  78 |     e.preventDefault();  react-hooks/immutability
+  38:6  warning  React Hook useEffect has a missing dependency: 'getData'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          react-hooks/exhaustive-deps
+
+Ô£û 3 problems (1 error, 2 warnings)
+
